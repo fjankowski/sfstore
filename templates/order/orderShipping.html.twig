@@ -1,0 +1,71 @@
+{% extends ('base.html.twig') %}
+
+{% block body %}
+
+
+
+
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+
+        <label>Zapamiętane adresy</label>
+        <select class="form-select known" aria-label="Large select example">
+            <option value="-1"> </option>
+            {% for k in known %}
+                <option value="{{ k.id }}">{{ k.name }} {{ k.lastname }} - {{ k.street }} {{ k.buildingnr }} {{ k.city}}</option>
+            {% endfor %}
+        </select>
+        <input type="checkbox" class="btn-check" id="btncheck" autocomplete="off">
+        <label class="btn btn-outline-primary" for="btncheck">Zapisać Adres?</label>
+        <br><br>
+        <button class="btn btn-primary" id="submit">{{ button_label|default('Save') }}</button>
+    {{ form_end(form) }}
+
+    <script>
+        $(document).ready(function ()
+        {
+            $('.known').change(function ()
+            {
+                var selected = $(this).val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/public/index.php/checkout/shipping/address/' + selected,
+                    data: {shippingMethod: selected},
+                    success: function (data) {
+                        var address = data.address;
+                        if(address.name != '')
+                        {
+                            $('#order_address_form_name').val(address.name);
+                            $('#order_address_form_lastname').val(address.lastname);
+                            $('#order_address_form_street').val(address.street);
+                            $('#order_address_form_building_nr').val(address.building_nr);
+                            $('#order_address_form_locale_nr').val(address.locale_nr);
+                            $('#order_address_form_postcode').val(address.postcode);
+                            $('#order_address_form_city').val(address.city);
+                            $('#order_address_form_phone_nr').val(address.phone_nr);
+                        }
+
+                        console.log(address.locale_nr);
+                        console.log(address.locale_nr == '');
+                    }
+                });
+
+                $('#order_address_form_alreadyRemembered').val($('.known').val() != -1)
+            });
+
+
+            $('#btncheck').change(function ()
+            {
+                $('#order_address_form_remember').val($('#btncheck').val())
+            });
+
+            $('#order_address_form_shipping').change(function ()
+            {
+                $('#order_address_form_shipping_choice').val($('#order_address_form_shipping').val())
+            });
+        })
+    </script>
+
+{% endblock %}

@@ -1,0 +1,8 @@
+<div class="card text-center justify-content-md-center" style="width: 18rem;">
+    <img src="/public/uploads/{{ item.image }}"  alt="{{ item.title }}">
+    <div class="card-body">
+        <h5 class="card-title"><a href="/public/index.php/inventory/show/{{ item.id }}">{{ item.title }}</a></h5>
+        <h6 class="card-text">Cena: <b>{{ item.price }}zł</b></h6>
+        <a href="#" class="btn btn-primary add-to-cart" data-product-id="{{ item.id }}">Dodaj do koszyka</a>
+    </div>
+</div>
