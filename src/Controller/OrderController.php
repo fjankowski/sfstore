@@ -83,6 +83,8 @@ class OrderController extends AbstractController
             $user = $tokenStorage->getToken()->getUser();
             $address = new ShippingAddress();
 
+            dump($data);
+
             $address->setName($data['name']);
             $address->setLastname($data['lastname']);
             $address->setStreet($data['street']);
@@ -238,7 +240,9 @@ class OrderController extends AbstractController
             $payment->setStatus($payment_status);
             $em->flush();
             dump($payment);
-            return $this->redirectToRoute('checkout_payment');
+            return $this->render('shipping/toshipempty.html.twig', [
+                'form' => $form
+            ]);
         }
 
         return $this->render('order/orderPayment.html.twig', [
