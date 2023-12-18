@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+        {% for post in user.orders %}
+            <h4>Zamówienie nr: {{ post.id }}</h4>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <td>Produkt</td>
+                    <td>Ilość</td>
+                </tr>
+                </thead>
+                <tbody>
+                {% for prod in post.products %}
+                    <tr>
+                        <td>{{ prod.item.title }}</td>
+                        <td>{{ prod.count }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary" type="button">Szczegóły zamówienia</button>
+            </div>
+            <br><br><br>
+        {% endfor %}
+{% endblock %}

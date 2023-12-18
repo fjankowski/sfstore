@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h2 class="text-center">Witaj <span class="text-primary">{{ user.username }}</span>!</h2>
+    <br>
+    Placeholder (niedokończone płatności)
+    <br>
+    Placeholder (ostatnie zamówienie status)
+    <br>
+
+    <a href={{ path('user_history_current') }}><button class="btn">Zamówienia</button></a>
+    <a href={{ path('user_addresses_current') }}><button class="btn">Adresy</button></a>
+
+    <br><br>
+    <a class="text-center text-danger">Wyloguj</a>
+
+{% endblock %}

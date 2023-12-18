@@ -52,6 +52,19 @@ class ShippingAddress
         $this->shippings = new ArrayCollection();
     }
 
+    public function isEqual(ShippingAddress $other): bool
+    {
+        return
+            $this->getName() == $other->getName() &&
+            $this->getLastname() == $other->getLastname() &&
+            $this->getStreet() == $other->getStreet() &&
+            $this->getBuildingNr() == $other->getBuildingNr() &&
+            $this->getLocaleNr() === $other->getLocaleNr() &&
+            $this->getPostcode() === $other->getPostcode() &&
+            $this->getCity() === $other->getCity() &&
+            $this->getPhoneNr() === $other->getPhoneNr();
+    }
+
     public function getId(): ?int
     {
         return $this->id;

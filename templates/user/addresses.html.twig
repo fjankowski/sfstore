@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ message }}</div>
+    {% endfor %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td>Imię</td>
+            <td>Nazwisko</td>
+            <td>Ulica</td>
+            <td>Nr</td>
+            <td>Nr</td>
+            <td>Miasto</td>
+            <td>Kod Pocztowy</td>
+            <td>Nr Tel</td>
+            <td>Akcja</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for post in user.addresses %}
+            <tr>
+                <td>{{ post.name }}</td>
+                <td>{{ post.lastname }}</td>
+                <td>{{ post.street }}</td>
+                <td>{{ post.buildingnr }}</td>
+                <td>{{ post.localenr }}</td>
+                <td>{{ post.postcode }}</td>
+                <td>{{ post.city }}</td>
+                <td>{{ post.phonenr }}</td>
+                <td>
+                    <a class="text-danger">Usuń</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

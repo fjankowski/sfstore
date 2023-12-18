@@ -83,8 +83,6 @@ class OrderController extends AbstractController
             $user = $tokenStorage->getToken()->getUser();
             $address = new ShippingAddress();
 
-            dump($data);
-
             $address->setName($data['name']);
             $address->setLastname($data['lastname']);
             $address->setStreet($data['street']);
@@ -93,11 +91,27 @@ class OrderController extends AbstractController
             $address->setPostcode($data['postcode']);
             $address->setCity($data['city']);
             $address->setPhoneNr($data['phone_nr']);
-            if($data['remember'])$address->setUser($user);
+
+            $foundAddress = null;
+
+            foreach ($user->getAddresses() as $add)
+            {
+                if(!$add->isEqual($address)) continue;
+
+                $foundAddress = $add;
+                break;
+            }
+            if($foundAddress == null)
+            {
+                $foundAddress = $address;
+                if($data['remember'])$address->setUser($user);
+                $em->persist($address);
+                dump($address);
+            }
 
             $shipping = new Shipping();
             $shipping->setMethod($data[$data['shipping_choice']]);
-            $shipping->setAddress($address);
+            $shipping->setAddress($foundAddress);
             $shipping->setStatus($em->getRepository(ShippingStatus::class)->find(['id' => 1]));
 
             $paymentMethodId = $data[$data['shipping_choice']];
@@ -127,7 +141,7 @@ class OrderController extends AbstractController
             }
             $order->setPrice($sum);
 
-            $em->persist($address);
+
             $em->persist($shipping);
             $em->persist($payment);
             $em->persist($order);
@@ -228,7 +242,7 @@ class OrderController extends AbstractController
             {
                 $payment_status = $em->getRepository(PaymentStatus::class)->find(['id' => 4]);
             }
-            else if($payment->getPrice() == 0)
+            else if($payment->getPaidAmount() == 0)
             {
                 $payment_status = $em->getRepository(PaymentStatus::class)->find(['id' => 2]);
             }
