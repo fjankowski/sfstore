@@ -33,7 +33,9 @@
             </form>
             <a href="{{ path('checkout') }}"><button class="btn btn-outline-info mx-2 cart-btn">Koszyk (x)</button></a>
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                <button class="btn btn-outline-info mx-2" type="submit">Wyloguj</button>
+                <a href="{{ path('user_page') }}"><button class="btn btn-outline-info mx-2" type="submit">Profil</button></a>
+            {% else %}
+                <a href="{{ path('app_login') }}"><button class="btn btn-outline-info mx-2" type="submit">Zaloguj</button></a>
             {% endif %}
         </div>
     </div>

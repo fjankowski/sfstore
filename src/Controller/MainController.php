@@ -9,13 +9,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class MainController extends AbstractController
 {
     #[Route('/', name: 'home')]
-    public function index(Request $request, EntityManagerInterface $em)
+    public function index(Request $request, EntityManagerInterface $em, TokenStorageInterface $tokenStorage)
     {
         $qb = $em->createQueryBuilder();
+        $user = $tokenStorage->getToken();
 
         $qb
             ->select('p')
@@ -23,7 +25,13 @@ class MainController extends AbstractController
             ->andWhere('p.is_hidden = :isHidden')
             ->setParameter('isHidden', 0)
             ->orderBy('p.id', 'DESC')
-            ->setMaxResults('6');
+            ->setMaxResults('8');
+
+        if(!$user)
+        {
+            $qb->andWhere('p.require_login = :isLog')
+                ->setParameter('isLog', 0);
+        }
 
         $products=$qb->getQuery()->getResult();
 

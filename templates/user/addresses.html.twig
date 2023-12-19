@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    {% if user.orders is empty %}
+        <h2 class="text-center">Brak adresów</h2>
+    {% else %}
     {% for message in app.flashes('success') %}
         <div class="alert alert-success" role="alert">{{ message }}</div>
     {% endfor %}
@@ -36,4 +39,5 @@
         {% endfor %}
         </tbody>
     </table>
+    {% endif %}
 {% endblock %}

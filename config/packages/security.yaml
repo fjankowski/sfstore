@@ -40,6 +40,17 @@ security:
         # - { path: ^/inventory/create, roles: ROLE_ADMIN }
         # - { path: ^/inventory/delete, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/shipping, roles: [ROLE_ADMIN, ROLE_MAGAZYN]}
+        - { path: ^/logout, roles: [IS_AUTHENTICATED_FULLY]}
+        - { path: ^/user/\d+, roles: ROLE_ADMIN }
+        - { path: ^/user/list, roles: ROLE_ADMIN }
+        - { path: ^/user, roles: [ IS_AUTHENTICATED_FULLY ] }
+        - { path: ^/user/, roles: [ IS_AUTHENTICATED_FULLY ] }
+        - { path: ^/checkout/shipping, roles: [ IS_AUTHENTICATED_FULLY ] }
+        - { path: ^/checkout/payment, roles: [ IS_AUTHENTICATED_FULLY ] }
+        - { path: ^/checkout/confirm, roles: [ IS_AUTHENTICATED_FULLY ] }
+        - { path: ^/inventory/show/\d+, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_ANONYMOUSLY ] }
+        - { path: ^/inventory, roles: ROLE_ADMIN }
 
 when@test:
     security:

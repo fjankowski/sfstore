@@ -1,14 +1,37 @@
 function AddToCart(productId)
 {
-    var cart = GetCart();
+    let cart = GetCart();
 
-    var exists = cart.find(item => item.id === productId);
+    let exists = cart.find(item => item.id === productId);
 
     if(exists) exists.quantity++;
     else cart.push({id: productId, quantity: 1});
 
     localStorage.setItem('cart', JSON.stringify(cart));
 
+    UpdateCart()
+}
+
+function RemoveFromCartQuantity(productId, q)
+{
+    let cart = GetCart();
+    let exists = cart.findIndex(item => item.id === productId);
+
+    if(exists !== -1) cart[exists].quantity-=q;
+    if(cart[exists].quantity <= 0) cart.splice(exists, 1);
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    UpdateCart()
+}
+
+function RemoveFromCart(productId)
+{
+    let cart = GetCart();
+    let exists = cart.findIndex(item => item.id === productId);
+
+    if(exists !== -1) cart.splice(exists, 1);
+
+    localStorage.setItem('cart', JSON.stringify(cart));
     UpdateCart()
 }
 

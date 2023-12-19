@@ -4,15 +4,30 @@
 
     <h2 class="text-center">Witaj <span class="text-primary">{{ user.username }}</span>!</h2>
     <br>
-    Placeholder (niedokończone płatności)
+    {% for u in unpaid %}
+
+    {% endfor %}
     <br>
-    Placeholder (ostatnie zamówienie status)
+    {% for u in unrecieved %}
+
+    {% endfor %}
     <br>
 
-    <a href={{ path('user_history_current') }}><button class="btn">Zamówienia</button></a>
-    <a href={{ path('user_addresses_current') }}><button class="btn">Adresy</button></a>
+    <a href={{ path('user_history_current') }}><button class="btn btn-primary">Zamówienia</button></a>
+    <a href={{ path('user_addresses_current') }}><button class="btn btn-primary">Adresy</button></a>
+    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_MAGAZYN') %}
+        <a href={{ path('user_addresses_current') }}><button class="btn btn-primary">Pakowanie</button></a>
+        <a href={{ path('user_addresses_current') }}><button class="btn btn-primary">Zamówienia</button></a>
+    {% endif %}
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href={{ path('user_addresses_current') }}><button class="btn btn-primary">Użytkownicy</button></a>
+        <a href={{ path('user_addresses_current') }}><button class="btn btn-primary">Zamówienia</button></a>
+        <a href={{ path('user_addresses_current') }}><button class="btn btn-primary">Inwentarz</button></a>
+    {% endif %}
 
-    <br><br>
+    <br>
+
+    <br>
     <a class="text-center text-danger">Wyloguj</a>
 
 {% endblock %}

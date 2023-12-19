@@ -5,18 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd472153-4031-4aaf-9496-cf31b8e0df62" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/sfappdb.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Controller/DebugController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/debug.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/Cart.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/Cart.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/InventoryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/InventoryController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/MainController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/MainController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/OrderController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/OrderController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/RegistrationController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SecurityController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/ShippingAddress.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/ShippingAddress.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/registration/index.html.twig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/registration/register.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/login/register.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/security/login.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/login/login.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/complete.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/addresses.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/elements/item/itemList.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/elements/item/itemList.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/elements/nav.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/elements/nav.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order/cartView.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/cartView.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order/orderShipping.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/orderShipping.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/user/addresses.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/addresses.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/user/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/index.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/user/orders.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/orders.html.twig" afterDir="false" />
     </list>
@@ -28,6 +30,13 @@
   <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
     <execution />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -120,6 +129,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
@@ -146,7 +156,8 @@
       <option name="presentableId" value="Default" />
       <updated>1702667825622</updated>
       <workItem from="1702667828550" duration="334000" />
-      <workItem from="1702891381127" duration="23226000" />
+      <workItem from="1702891381127" duration="24340000" />
+      <workItem from="1702981515257" duration="19733000" />
     </task>
     <servers />
   </component>

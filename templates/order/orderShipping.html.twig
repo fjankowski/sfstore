@@ -65,6 +65,10 @@
             {
                 $('#order_address_form_shipping_choice').val($('#order_address_form_shipping').val())
             });
+
+            $('#submit').click(function () {
+                localStorage.removeItem('cart');
+            })
         })
     </script>
 

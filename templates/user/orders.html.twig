@@ -1,27 +1,34 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-        {% for post in user.orders %}
-            <h4>Zamówienie nr: {{ post.id }}</h4>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <td>Produkt</td>
-                    <td>Ilość</td>
-                </tr>
-                </thead>
-                <tbody>
-                {% for prod in post.products %}
-                    <tr>
-                        <td>{{ prod.item.title }}</td>
-                        <td>{{ prod.count }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            <div class="d-grid gap-2">
-                <button class="btn btn-primary" type="button">Szczegóły zamówienia</button>
+        {% for post in user.orders|reverse %}
+            <div class="card">
+                <div class="card-header">Zamówienie nr: {{ post.id }}</div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <td>Produkt</td>
+                                <td>Ilość</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for prod in post.products %}
+                            <tr>
+                                <td>{{ prod.item.title }}</td>
+                                <td>{{ prod.count }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" type="button">Szczegóły zamówienia</button>
+                    </div>
+                </div>
             </div>
-            <br><br><br>
+            <br><br>
         {% endfor %}
+    {% if user.orders is empty %}
+        <h2 class="text-center">Brak zamówień</h2>
+    {% endif %}
 {% endblock %}

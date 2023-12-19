@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 
 #[Route('/inventory', name: 'app_inventory.')]
@@ -25,8 +26,12 @@ class InventoryController extends AbstractController
     }
 
     #[Route('/show/{id}', name: 'show')]
-    public function show(ShopItem $item): Response
+    public function show(ShopItem $item, TokenStorageInterface $token): Response
     {
+        if($item->isRequireLogin() && !$token->getToken())
+        {
+            throw $this->createNotFoundException();
+        }
         return $this->render('inventory/show.html.twig', [
             'item' => $item,
         ]);

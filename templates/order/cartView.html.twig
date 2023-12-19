@@ -13,13 +13,19 @@
         <tbody>
         {% for item in items %}
             <tr>
-                {% include 'elements/item/itemList.html.twig' with {'item':item.product, 'count':item.count} %}
+                <td>{{ item.product.id }}</td>
+                <td>{{ item.product.title }}</td>
+                <td>{{ item.product.price }}zł</td>
+                <td>{{ item.count }}</td>
+                <td><button class="btn btn-secondary cart-remove" data-item-id="{{ item.product.id }}">Usuń z koszyka</button></td>
+                <td>{{ item.product.price * item.count }}zł</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
     <h4 class="float-end cart-sum">Suma: <b>{{ total }}</b>zł</h4><br><br>
-    <button class="btn btn-danger reset-cart">Usuń wszystko</button>  <a href="{{ path('checkout_shipping') }}"><button class="btn btn-primary float-end">Zapłać</button></a>
+    <button class="btn btn-danger reset-cart">Usuń wszystko</button>
+    <a href="{{ path('checkout_shipping') }}"><button class="btn btn-primary float-end" id="finalize">Zapłać</button></a>
 {% endblock %}
 
 {% block javascripts %}
@@ -29,6 +35,14 @@
             $('.reset-cart').click(function() {
                 console.log("!!!");
                 ClearCart();
+                UpdateCart();
+                $('tbody').empty();
+                $('.cart-sum').html("Suma: <b>0</b>zł");
+            });
+
+            $('.cart-remove').click(function() {
+                console.log("!!!");
+                RemoveFromCart($(this).data('item-id'), 1);
                 UpdateCart();
                 $('tbody').empty();
                 $('.cart-sum').html("Suma: <b>0</b>zł");

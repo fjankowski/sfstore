@@ -70,17 +70,26 @@ class OrderController extends AbstractController
     #[Route('/shipping', name: 'checkout_shipping')]
     public function shipping(Request $request, EntityManagerInterface $em, SessionInterface $session, TokenStorageInterface $tokenStorage)
     {
-        $ship = $em->getRepository(ShippingMethod::class)->findAll();
+        if(!$session->get('cart'))
+        {
+            $this->addFlash('failed', 'Nieprawidłowy koszyk!');
+            return $this->redirectToRoute('checkout');
+        }
+        if($session->get('order_data'))
+        {
+            $this->addFlash('failed', 'Najpierw opłać zamówienie!');
+            return $this->redirectToRoute('checkout_payment');
+        }
 
+        $ship = $em->getRepository(ShippingMethod::class)->findAll();
+        $user = $tokenStorage->getToken()->getUser();
         $form = $this->createForm(OrderAddressForm::class, $ship);
         $form->handleRequest($request);
-
-        $user = $tokenStorage->getToken()->getUser();
 
         if($form->isSubmitted() && $form->isValid())
         {
             $data = $form->getData();
-            $user = $tokenStorage->getToken()->getUser();
+
             $address = new ShippingAddress();
 
             $address->setName($data['name']);
@@ -106,7 +115,6 @@ class OrderController extends AbstractController
                 $foundAddress = $address;
                 if($data['remember'])$address->setUser($user);
                 $em->persist($address);
-                dump($address);
             }
 
             $shipping = new Shipping();
@@ -139,6 +147,7 @@ class OrderController extends AbstractController
                 $order->addProduct($orderEntry);
                 $em->persist($orderEntry);
             }
+            $session->remove('cart');
             $order->setPrice($sum);
 
 
@@ -163,7 +172,6 @@ class OrderController extends AbstractController
     {
         $user = $tokenStorage->getToken()->getUser();
         $address = $em->getRepository(ShippingAddress::class)->find($id);
-        $addressData = [];
 
         if($user instanceof User && $user->getAddresses()->contains($address))
         {
@@ -200,6 +208,7 @@ class OrderController extends AbstractController
     public function updateShipping(Request $request, SessionInterface $session, EntityManagerInterface $em, TokenStorageInterface $tokenStorage)
     {
         $data = json_decode($request->getContent(), true);
+        $max = $em->getRepository(ShopItem::class)->findOneBy([], ['id' => 'DESC']).getId();
 
         for ($i = 0; $i < sizeof($data); $i++)
         {
@@ -217,19 +226,20 @@ class OrderController extends AbstractController
     #[Route('/payment', name: 'checkout_payment')]
     public function payment(Request $request, SessionInterface $session, EntityManagerInterface $em)
     {
-        $cart = $session->get('cart');
         $order = $session->get('order_data');
+        if(!$order)
+        {
+            return $this->redirectToRoute('checkout');
+        }
         $payment = $em->getRepository(Payment::class)->find(['id' => $order->getPayment()->getId()]);
         $payment2 = new Payment();
-        dump($order);
-        dump($payment);
-        dump($payment2);
 
         $form = $this->createForm(PaymentType::class, $payment2);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
         {
+
             $payment->setMethod($payment2->getMethod());
             $payment->setPaidAmount($payment2->getPaidAmount());
 
@@ -253,7 +263,7 @@ class OrderController extends AbstractController
 
             $payment->setStatus($payment_status);
             $em->flush();
-            dump($payment);
+            $session->remove('order_data');
             return $this->render('shipping/toshipempty.html.twig', [
                 'form' => $form
             ]);
@@ -267,8 +277,6 @@ class OrderController extends AbstractController
     #[Route('/confirm', name: 'checkout_confirm')]
     public function confirm(SessionInterface $session)
     {
-        $cart = $session->get('cart');
-
         return $this->render('home/index.html.twig');
     }
 }

@@ -75,21 +75,21 @@ class UserController extends AbstractController
     public function userPanel(TokenStorageInterface $tokenStorage): Response
     {
         $user = $tokenStorage->getToken()->getUser();
-        return $this->render('user/index.html.twig', ['user' => $user]);
+        return $this->render('user/index.html.twig', ['user' => $user, 'unpaid' => null, 'unrecieved'=>null]);
     }
 
     #[Route(path: '/user/history', name: 'user_history_current')]
     public function userSelfHistory(TokenStorageInterface $tokenStorage): Response
     {
         $user = $tokenStorage->getToken()->getUser();
-        return $this->forward('App\Controller\UserController::userHistory', ['id' => $user->getId()]);
+        return $this->render('user/orders.html.twig', ['user' => $user]);
     }
 
     #[Route(path: '/user/addresses', name: 'user_addresses_current')]
     public function userSelfAddress(TokenStorageInterface $tokenStorage): Response
     {
         $user = $tokenStorage->getToken()->getUser();
-        return $this->forward('App\Controller\UserController::userAddress', ['id' => $user->getId()]);
+        return $this->render('user/addresses.html.twig', ['user' => $user]);
     }
 
     //#[Route(path: '/user/list', name: 'app_logout1', requirements: ['id' => '\d*'])]
@@ -98,16 +98,14 @@ class UserController extends AbstractController
     //#[Route(path: '/user/{id}/remove', name: 'app_logout1', requirements: ['id' => '\d*'])]
 
     #[Route(path: '/user/{id?}/history', name: 'user_history', requirements: ['id' => '\d*'])]
-    public function userHistory($id, UserRepository $ur): Response
+    public function userHistory(User $user, UserRepository $ur): Response
     {
-        $user = $ur->find(['id' => $id]);
         return $this->render('user/orders.html.twig', ['user' => $user]);
     }
 
     #[Route(path: '/user/{id?}/address', name: 'user_address', requirements: ['id' => '\d*'])]
-    public function userAddress($id, UserRepository $ur): Response
+    public function userAddress(User $user, UserRepository $ur): Response
     {
-        $user = $ur->find(['id' => $id]);
         return $this->render('user/addresses.html.twig', ['user' => $user]);
     }
 
