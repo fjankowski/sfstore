@@ -97,6 +97,18 @@ class UserController extends AbstractController
     //#[Route(path: '/user/{id}/view', name: 'app_logout1', requirements: ['id' => '\d*'])]
     //#[Route(path: '/user/{id}/remove', name: 'app_logout1', requirements: ['id' => '\d*'])]
 
+    #[Route(path: '/user/list', name: 'user_admin_list', requirements: ['id' => '\d*'])]
+    public function userList( UserRepository $ur): Response
+    {
+        return $this->render('user/orders.html.twig', []);
+    }
+
+    #[Route(path: '/user/{id}/remove', name: 'user_admin_remove', requirements: ['id' => '\d*'])]
+    public function userView(User $user, UserRepository $ur): Response
+    {
+        return $this->render('user/orders.html.twig', ['user' => $user]);
+    }
+
     #[Route(path: '/user/{id?}/history', name: 'user_history', requirements: ['id' => '\d*'])]
     public function userHistory(User $user, UserRepository $ur): Response
     {
@@ -108,5 +120,7 @@ class UserController extends AbstractController
     {
         return $this->render('user/addresses.html.twig', ['user' => $user]);
     }
+
+
 
 }
