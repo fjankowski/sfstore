@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <a href="{{ path('app_register') }}"><div class="d-grid gap-2">
+        <button class="btn btn-primary" type="button">Dodaj</button>
+    </div></a>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td>ID</td>
+            <td>Login</td>
+            <td>Podstrony</td>
+            <td>Akcje</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for u in users %}
+            <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.username }}</td>
+                <td>
+                    <a class="text-primary" href="{{ path('user_history', {id: u.id}) }}">Zamówienia</a>
+                    <a class="text-primary" href="{{ path('user_address', {id: u.id}) }}">Adresy</a>
+                    <a class="text-primary" href="{{ path('user_admin_role', {id: u.id}) }}">Role</a>
+                </td>
+                <td>
+                    <a class="text-danger" href="{{ path('user_admin_remove', {id: u.id}) }}">Usuń</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -5,6 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd472153-4031-4aaf-9496-cf31b8e0df62" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/templates/user/crud/delete.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/user/crud/list.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/user/crud/role.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/user/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/index.html.twig" afterDir="false" />
@@ -110,6 +113,9 @@
   &quot;associatedIndex&quot;: 6
 }</component>
   <component name="ProjectId" id="2ZakxWNHdKXX8QdRfKfh60zLPTj" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -145,7 +151,7 @@
       <workItem from="1702667828550" duration="334000" />
       <workItem from="1702891381127" duration="24340000" />
       <workItem from="1702981515257" duration="20439000" />
-      <workItem from="1703071056731" duration="1126000" />
+      <workItem from="1703071056731" duration="2841000" />
     </task>
     <servers />
   </component>

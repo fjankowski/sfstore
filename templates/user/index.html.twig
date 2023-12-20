@@ -17,7 +17,7 @@
     <a href={{ path('user_addresses_current') }}><button class="btn btn-primary">Adresy</button></a>
     {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_MAGAZYN') %}
         <a href={{ path('app_shipping_ship') }}><button class="btn btn-primary">Pakowanie</button></a>
-        <a href={{ path('app_shipping_list_page') }}><button class="btn btn-primary">Zamówienia</button></a>
+        <a href={{ path('app_shipping_list') }}><button class="btn btn-primary">Zamówienia</button></a>
     {% endif %}
     {% if is_granted('ROLE_ADMIN') %}
         <a href={{ path('user_admin_list') }}><button class="btn btn-primary">Użytkownicy</button></a>
