@@ -1,9 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success" role="alert">{{ message }}</div>
-    {% endfor %}
+    <a href="{{ path('app_inventory.create') }}">
+        <div class="d-grid gap-2 mb-3">
+            <button class="btn btn-primary" type="button">Dodaj</button>
+        </div>
+    </a>
     <table class="table table-striped">
         <thead>
             <tr>

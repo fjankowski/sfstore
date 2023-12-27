@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Order;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
@@ -92,37 +93,73 @@ class UserController extends AbstractController
         return $this->render('user/addresses.html.twig', ['user' => $user]);
     }
 
-    //#[Route(path: '/user/list', name: 'app_logout1', requirements: ['id' => '\d*'])]
-    //#[Route(path: '/user/{id}/edit', name: 'app_logout1', requirements: ['id' => '\d*'])]
-    //#[Route(path: '/user/{id}/view', name: 'app_logout1', requirements: ['id' => '\d*'])]
-    //#[Route(path: '/user/{id}/remove', name: 'app_logout1', requirements: ['id' => '\d*'])]
+    #[Route(path: '/user/history/{index}', name: 'user_history_id_current')]
+    public function userSelfHistoryItem($index, TokenStorageInterface $tokenStorage): Response
+    {
+        $order = $tokenStorage->getToken()->getUser()->getOrders()[$index-1];
+        return $this->render('order/order.html.twig', ['order' => $order]);
+    }
+
+    #[Route(path: '/user/order/{id}', name: 'users_history_order')]
+    public function userHistoryItem(Order $order, TokenStorageInterface $tokenStorage): Response
+    {
+        return $this->render('order/order.html.twig', ['order' => $order]);
+    }
+
 
     #[Route(path: '/user/list', name: 'user_admin_list', requirements: ['id' => '\d*'])]
     public function userList(UserRepository $ur): Response
     {
-        return $this->render('user/crud/list.html.twig', ['users' => $ur->findAll()]);
+        return $this->render('user/crud/list.html.twig', ['users' => $ur->findAll([''])]);
     }
 
     #[Route(path: '/user/{id}/remove', name: 'user_admin_remove', requirements: ['id' => '\d*'])]
-    public function userView(User $user, UserRepository $ur): Response
+    public function userView(User $user, EntityManagerInterface $em): Response
     {
-        return $this->render('user/orders.html.twig', ['user' => $user]);
+        $user->setUsername("removed-".$user->getId());
+        $user->setPassword('');
+
+        $em->flush();
+
+        return $this->render('user/crud/list.html.twig', ['users' => $em->getRepository(User::class)->findAll()]);
     }
 
-    #[Route(path: '/user/{id?}/roles', name: 'user_admin_role', requirements: ['id' => '\d*'])]
-    public function userRole(User $user, UserRepository $ur): Response
+    #[Route(path: '/user/{id}/roles', name: 'user_admin_role', requirements: ['id' => '\d*'])]
+    public function userRole(User $user): Response
     {
-        return $this->render('user/orders.html.twig', ['user' => $user]);
+        return $this->render('user/crud/role.html.twig', ['user' => $user]);
     }
 
+    #[Route(path: '/user/{id}/roles/remove/{roleid}', name: 'user_admin_role_delete', requirements: ['id' => '\d*'])]
+    public function userRoleDelete(User $user, $roleid, EntityManagerInterface $em): Response
+    {
+        $uroles = $user->getRoles();
+        unset($uroles[$roleid]);
+        $uroles = array_values($uroles);
+        $user->setRoles($uroles);
+        dump($user);
+        $em->flush();
+        return $this->redirect($this->generateUrl('user_admin_role', ['id' => $user->getId()]));
+    }
 
-    #[Route(path: '/user/{id?}/history', name: 'user_history', requirements: ['id' => '\d*'])]
+    #[Route(path: '/user/{id}/roles/grant/{role}', name: 'user_admin_role_grant', requirements: ['id' => '\d*'])]
+    public function userRoleGrant(User $user, $role, EntityManagerInterface $em): Response
+    {
+        $uroles = $user->getRoles();
+        array_push($uroles, $role);
+        $user->setRoles($uroles);
+        $em->flush();
+        $this->addFlash('success', 'Użytkownik '.$user->getUsername().'('.$user->getId().') posiada teraz rolę: '.$role."!");
+        return $this->redirect($this->generateUrl('user_admin_role', ['id' => $user->getId()]));
+    }
+
+    #[Route(path: '/user/{id}/history', name: 'user_history', requirements: ['id' => '\d*'])]
     public function userHistory(User $user, UserRepository $ur): Response
     {
-        return $this->render('user/orders.html.twig', ['user' => $user]);
+        return $this->render('user/orders2.html.twig', ['user' => $user]);
     }
 
-    #[Route(path: '/user/{id?}/address', name: 'user_address', requirements: ['id' => '\d*'])]
+    #[Route(path: '/user/{id}/address', name: 'user_address', requirements: ['id' => '\d*'])]
     public function userAddress(User $user, UserRepository $ur): Response
     {
         return $this->render('user/addresses.html.twig', ['user' => $user]);

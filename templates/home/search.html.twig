@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <a href="{{ path('app_inventory.create') }}">
+        <div class="d-grid gap-2 mb-3">
+            <button class="btn btn-primary" type="button">Dodaj</button>
+        </div>
+    </a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td>ID</td>
+                <td>Nazwa</td>
+                <td>Opis</td>
+                <td>Cena</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in items %}
+                <tr>
+                    <td>{{ post.id }}</td>
+                    <td>
+                        <a href="{{ path('app_inventory.show', {id: post.id}) }}">{{ post.title }}</a>
+                    </td>
+                    <td>{{ post.description }}</td>
+                    <td>{{ post.price }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

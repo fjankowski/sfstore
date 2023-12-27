@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-        {% for post in user.orders|reverse %}
-            <div class="card">
+    <div class="row">
+        {% for post in user.orders %}
+            <div class="card order-{{ loop.length-loop.index }}">
                 <div class="card-header">Zamówienie nr: {{ post.id }}</div>
                 <div class="card-body">
                     <table class="table table-striped">
@@ -21,14 +22,12 @@
                         {% endfor %}
                         </tbody>
                     </table>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary" type="button">Szczegóły zamówienia</button>
-                    </div>
+                    <a href="{{ path('user_history_id_current', {index: loop.index}) }}"><button class="btn btn-primary w-100" type="button">Szczegóły zamówienia</button></a>
                 </div>
             </div>
-            <br><br>
         {% endfor %}
     {% if user.orders is empty %}
         <h2 class="text-center">Brak zamówień</h2>
     {% endif %}
+    </div>
 {% endblock %}

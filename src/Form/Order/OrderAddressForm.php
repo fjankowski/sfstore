@@ -20,7 +20,7 @@ class OrderAddressForm extends AbstractType
                 'required' => true,
                 'choices' => $options['data'],
                 'choice_label' => 'name'
-                ])
+            ])
             ->add('name')
             ->add('lastname')
             ->add('street')

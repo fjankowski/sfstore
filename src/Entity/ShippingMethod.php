@@ -6,6 +6,8 @@ use App\Repository\ShippingMethodRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use http\Client\Request;
+use http\Client\Response;
 
 #[ORM\Entity(repositoryClass: ShippingMethodRepository::class)]
 class ShippingMethod

@@ -41,6 +41,21 @@ class MainController extends AbstractController
         ]);
     }
 
+    #[Route('/search/{term}', name: 'search')]
+    public function search(Request $request, EntityManagerInterface $em, $term)
+    {
+        $products=$em->getRepository(ShopItem::class)->createQueryBuilder('e')
+        ->where('e.title LIKE :searchTerm')
+        ->setParameter('searchTerm', '%' . $term . '%')
+        ->getQuery()
+        ->getResult();
+
+        return $this->render('home/search.html.twig',
+            [
+                'items' => $products
+            ]);
+    }
+
     #[Route('/update-cart', name: 'update_cart', methods: ['POST'])]
     public function updateCart(Request $request, SessionInterface $session, EntityManagerInterface $em)
     {
@@ -59,4 +74,6 @@ class MainController extends AbstractController
 
         return new JsonResponse(['success' => true, 'cart' => $data]);
     }
+
+
 }

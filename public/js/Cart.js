@@ -91,7 +91,7 @@ $(document).ready(function ()
             contentType: 'application/json',
             data: JSON.stringify({ cart: GetCart() }),
             success: function (response) {
-                console.log(response);
+                UpdateCart();
             },
             error: function (error) {
                 console.error(error);

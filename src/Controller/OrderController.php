@@ -13,6 +13,7 @@ use App\Entity\ShippingMethod;
 use App\Entity\ShippingStatus;
 use App\Entity\ShopItem;
 use App\Entity\User;
+use App\Form\Order\PaymentForm;
 use App\Form\OrderAddressForm;
 use App\Form\PaymentType;
 use App\Form\ShippingAddressType;
@@ -23,10 +24,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 #[Route('/checkout')]
 class OrderController extends AbstractController
@@ -122,10 +120,8 @@ class OrderController extends AbstractController
             $shipping->setAddress($foundAddress);
             $shipping->setStatus($em->getRepository(ShippingStatus::class)->find(['id' => 1]));
 
-            $paymentMethodId = $data[$data['shipping_choice']];
-            $paymentMethod = $em->getRepository(PaymentMethod::class)->find(['id' => $paymentMethodId]);
             $payment = new Payment();
-            $payment->setMethod($paymentMethod);
+            $payment->setMethod($em->getRepository(PaymentMethod::class)->find(['id' => 1]));
             $payment->setStatus($em->getRepository(PaymentStatus::class)->find(['id' => 1]));
             $payment->setPaidAmount(0);
 
@@ -160,11 +156,11 @@ class OrderController extends AbstractController
         }
 
         return $this->render('order/orderShipping.html.twig',
-        [
-            'shipping' => $ship,
-            'form' => $form->createView(),
-            'known' => $user->getAddresses()
-        ]);
+            [
+                'shipping' => $ship,
+                'form' => $form->createView(),
+                'known' => $user->getAddresses()
+            ]);
     }
 
     #[Route('/shipping/address/{id}', name: 'checkout_payment_address_json')]
@@ -204,11 +200,77 @@ class OrderController extends AbstractController
         return new JsonResponse(['success' => true, 'address' => $addressData]);
     }
 
+    #[Route('/edit', name: 'checkout_id')]
+    public function checkoutForId(SessionInterface $session, EntityManagerInterface $em)
+    {
+        $cart = $session->get('cart');
+        $order = $em->getRepository(Order::class)->find(['id' => $session->get('cart_edit')->getId()]);
+
+        $price = 0.0;
+
+        foreach ($order->getProducts() as $existingProduct) {
+            $existingProduct->setCount(-1);
+        }
+
+        foreach ($cart as $item)
+        {
+            $productId = $item['id'];
+            dump($productId);
+            $productQuantity = $item['quantity'];
+            $test = false;
+            foreach ($order->getProducts() as $existingProduct) {
+                $otherId = $existingProduct->getItem()->getId();
+                if ($productId == $otherId) {
+                    $existingProduct->setCount($productQuantity);
+                    $price += $existingProduct->getItem()->getPrice() * $productQuantity;
+                    $test = true;
+                    break;
+                }
+            }
+
+            if($test) continue;
+            $item = $em->getRepository(ShopItem::class)->find(['id' => $productId]);
+            $newProduct = new OrderProductEntry();
+            $newProduct->setItem($item);
+            $newProduct->setCount($productQuantity);
+            $newProduct->setOrderRef($order);
+            $order->addProduct($newProduct);
+            $em->persist($newProduct);
+            $price += $item->getPrice() * $productQuantity;
+        }
+
+        foreach ($order->getProducts() as $existingProduct) {
+            if($existingProduct->getCount() != -1) continue;
+            $order->removeProduct($existingProduct);
+            $em->remove($existingProduct);
+        }
+
+        $order->setPrice($price);
+        $em->flush();
+        $this->addFlash('success', 'Zmieniono koszyk!');
+        dump($cart);
+        dump($order);
+        $session->remove('cart');
+        $session->remove('cart_edit');
+
+        return $this->redirectToRoute('app_shipping_list');
+    }
+
+    #[Route('/edit/cancel', name: 'checkout_id_exit')]
+    public function checkoutForIdCancel(SessionInterface $session, EntityManagerInterface $em)
+    {
+        $this->addFlash('warning', 'Anulowano!');
+        $session->remove('cart');
+        $session->remove('cart_edit');
+
+        return $this->redirectToRoute('app_shipping_list');
+    }
+
     #[Route('/shipping/session/update', name: 'checkout_payment_update')]
     public function updateShipping(Request $request, SessionInterface $session, EntityManagerInterface $em, TokenStorageInterface $tokenStorage)
     {
         $data = json_decode($request->getContent(), true);
-        $max = $em->getRepository(ShopItem::class)->findOneBy([], ['id' => 'DESC']).getId();
+        $max = $em->getRepository(ShopItem::class)->findOneBy([], ['id' => 'DESC'])->getId();
 
         for ($i = 0; $i < sizeof($data); $i++)
         {
@@ -223,28 +285,34 @@ class OrderController extends AbstractController
         return new JsonResponse(['success' => true, 'cart' => $data]);
     }
 
-    #[Route('/payment', name: 'checkout_payment')]
-    public function payment(Request $request, SessionInterface $session, EntityManagerInterface $em)
+    #[Route('/payment/{id?}', name: 'checkout_payment')]
+    public function payment($id, Request $request, SessionInterface $session, EntityManagerInterface $em)
     {
-        $order = $session->get('order_data');
-        if(!$order)
+        $order = null;
+        $payment = null;
+        if($id)
         {
-            return $this->redirectToRoute('checkout');
+            $order = $em->getRepository(Order::class)->find(['id' => $id]);
+            $payment = $order->getPayment();
         }
-        $payment = $em->getRepository(Payment::class)->find(['id' => $order->getPayment()->getId()]);
-        $payment2 = new Payment();
+        else
+        {
+            $order = $session->get('order_data');
+            if(!$order)
+            {
+                return $this->redirectToRoute('checkout');
+            }
+            $payment = $em->getRepository(Payment::class)->find(['id' => $order->getPayment()->getId()]);
+        }
 
-        $form = $this->createForm(PaymentType::class, $payment2);
+        $form = $this->createForm(PaymentForm::class, $payment, ['custom' => 3]);
+
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
         {
-
-            $payment->setMethod($payment2->getMethod());
-            $payment->setPaidAmount($payment2->getPaidAmount());
-
             $payment_status = null;
-            if($payment2->getStatus()->getId() == 5)
+            if($payment->getStatus()->getId() == 5)
             {
                 $payment_status = $em->getRepository(PaymentStatus::class)->find(['id' => 5]);
             }
@@ -264,6 +332,7 @@ class OrderController extends AbstractController
             $payment->setStatus($payment_status);
             $em->flush();
             $session->remove('order_data');
+
             return $this->render('shipping/toshipempty.html.twig', [
                 'form' => $form
             ]);
@@ -274,8 +343,20 @@ class OrderController extends AbstractController
         ]);
     }
 
+    #[Route('/payment/{id}/admin', name: 'checkout_payment_admin')]
+    public function paymentAdmin(Order $order, Request $request, SessionInterface $session, EntityManagerInterface $em)
+    {
+
+    }
+
     #[Route('/confirm', name: 'checkout_confirm')]
     public function confirm(SessionInterface $session)
+    {
+        return $this->render('home/index.html.twig');
+    }
+
+    #[Route('/return/{id}', name: 'checkout_return')]
+    public function return(SessionInterface $session)
     {
         return $this->render('home/index.html.twig');
     }

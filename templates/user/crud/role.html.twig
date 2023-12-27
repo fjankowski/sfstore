@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h3 class="text-center">Role użytkownika: <span class="text-primary">{{ user.username }}</span></h3>
+
+    <div id="rolesForm">
+        <input type="text" id="newRole" placeholder="Nowa rola">
+        <a id="addRole" href="{{ path('user_admin_role_grant', {id: user.id, role: 'ROLE_ADMIN'}) }}"><button type="button">Dodaj rolę</button></a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td>Role</td>
+            <td>Akcje</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for r in user.roles %}
+            <tr>
+                <td>{{ r }}</td>
+                <td>
+                    <a class="text-danger" href="{{ path('user_admin_role_delete', {id: user.id, roleid: loop.index0}) }}">Usuń</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function ()
+        {
+            $('#newRole').on('input', function() {
+                let val = $('#newRole').val();
+                let newUrl = "{{ path('user_admin_role_grant', {id: user.id, role: 'ROLE_'}) }}" + val;
+                $('#addRole').attr('href',newUrl);
+                console.log($(this).val())
+            });
+        });
+    </script>
+{% endblock %}

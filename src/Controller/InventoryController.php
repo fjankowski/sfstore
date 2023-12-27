@@ -57,6 +57,7 @@ class InventoryController extends AbstractController
             }
             $em->persist($item);
             $em->flush();
+            $this->addFlash('success', 'Dodano nowy przedmiot o id:'.$item->getId()."!");
             return $this->redirect($this->generateUrl('app_inventory.index'));
         }
 
@@ -71,9 +72,8 @@ class InventoryController extends AbstractController
     public function delete(ShopItem $item, EntityManagerInterface $em): Response
     {
         $em->remove($item);
+        $this->addFlash('success', 'Usunięto id:'.$item->getId()." pomyślnie!");
         $em->flush();
-
-        $this->addFlash('success', 'Removed!');
 
         return $this->redirect($this->generateUrl('app_inventory.index'));
     }

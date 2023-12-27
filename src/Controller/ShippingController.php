@@ -3,7 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Order;
+use App\Entity\PaymentMethod;
+use App\Entity\PaymentStatus;
 use App\Entity\Shipping;
+use App\Entity\ShippingAddress;
+use App\Entity\ShopItem;
+use App\Form\PaymentType;
 use App\Form\ShippingType;
 use App\Form\ToShipForm;
 use App\Repository\OrderProductEntryRepository;
@@ -99,14 +104,14 @@ class ShippingController extends AbstractController
     }
 
     #[Route('/list', name: 'app_shipping_list')]
-    public function list(ShippingRepository $shippingRepository): Response
+    public function list(OrderRepository $or): Response
     {
         return $this->render('shipping/list.html.twig', [
-            'shippings' => $shippingRepository->findAll(),
+            'orders' => $or->findAll(),
         ]);
     }
 
-    #[Route('/list/{id}', name: 'app_shipping_list_page')]
+    #[Route('/list/{id}/remove', name: 'app_shipping_list_page')]
     public function listId(ShippingRepository $shippingRepository): Response
     {
         return $this->render('shipping/page.html.twig', [
@@ -114,12 +119,82 @@ class ShippingController extends AbstractController
         ]);
     }
 
-    #[Route('/list/{id}/edit', name: 'app_shipping_list_edit')]
-    public function edit(ShippingRepository $shippingRepository): Response
+    #[Route('/list/{id}/edit/shipping', name: 'app_shipping_edit_s')]
+    public function editShipping(Request $request, Order $order, EntityManagerInterface $em): Response
     {
-        return $this->render('shipping/page.html.twig', [
-            'shippings' => $shippingRepository->findAll(),
+        $shipping = $order->getShipping();
+        $form = $this->createForm(ShippingType::class, $shipping);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $em->flush();
+            return $this->redirectToRoute('app_shipping_list');
+        }
+
+        return $this->render('order/orderPayment.html.twig', [
+            'form' => $form
         ]);
     }
 
+    #[Route('/list/{id}/edit/content', name: 'app_shipping_edit_c')]
+    public function editContent(Request $request, Order $order, EntityManagerInterface $em): Response
+    {
+        return $this->render('shipping/content.html.twig', [
+            'order' => $order
+        ]);
+    }
+
+    #[Route('/list/{id}/edit/content/json', name: 'app_shipping_edit_c_json', methods: 'POST')]
+    public function getContent(SessionInterface $session, Order $order, EntityManagerInterface $em): Response
+    {
+        $output = [];
+        $data = $order->getProducts();
+
+        for ($i = 0; $i < sizeof($data); $i++)
+        {
+            $output[] = ['id' => $data[$i]->getItem()->getId(), 'quantity' => $data[$i]->getCount()];
+        }
+
+        $session->set('cart', $output);
+        $session->set('cart_edit', $order);
+
+        return new JsonResponse(['success' => true, 'cart' => $output]);
+    }
+
+    #[Route('/list/{id}/edit/payment', name: 'app_shipping_edit_p')]
+    public function editPayment(Request $request, Order $order, EntityManagerInterface $em): Response
+    {
+        $payment = $order->getPayment();
+        $form = $this->createForm(PaymentType::class, $payment);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $em->flush();
+            return $this->redirectToRoute('app_shipping_list');
+        }
+
+        return $this->render('order/orderPayment.html.twig', [
+            'form' => $form
+        ]);
+    }
+
+    #[Route('/list/{id}/edit/payment/admin', name: 'app_shipping_edit_pad')]
+    public function editPaymentAdmin(Request $request, Order $order, EntityManagerInterface $em): Response
+    {
+        $pay = $order->getPayment();
+        $pay->setMethod($em->getRepository(PaymentMethod::class)->find(['id' => 2]));
+        $pay->setStatus($em->getRepository(PaymentStatus::class)->find(['id' => 5]));
+        $pay->setPaidAmount($order->getPrice());
+
+        $em->flush();
+
+        $referer = $request->headers->get('referer');
+
+        if ($referer) {
+            return $this->redirect($referer);
+        }
+        return $this->redirectToRoute('home');
+    }
 }

@@ -1,0 +1,55 @@
+{% extends ('base.html.twig') %}
+
+{% block body %}
+    <h1>Przeniesiono koszyk</h1>
+    <p>Wszystkie produkty znajdziesz w koszyku. Zapisz go lub anuluj w ksozyku (lub /checkout)</p>
+    <div class="card">
+        <div class="card-header text-center">Zawartość</div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <td>Produkt</td>
+                    <td>Ilość</td>
+                    <td>Cena (1)</td>
+                    <td>Suma</td>
+                </tr>
+                </thead>
+                <tbody>
+                {% for prod in order.products %}
+                    <tr>
+                        <td>{{ prod.item.title }}</td>
+                        <td>{{ prod.count }}</td>
+                        <td>{{ prod.item.price }} ZŁ</td>
+                        <td>{{ prod.item.price * prod.count }} ZŁ</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function ()
+        {
+            $.ajax({
+                type: 'POST',
+                url: 'content/json',
+                contentType: 'application/json',
+                success: function (response) {
+                    console.error(response['cart']);
+                    //localStorage.removeItem('cart');
+                    //for(let i = 0; i < response['cart'].length; i++) localStorage.setItem('cart', JSON.stringify(response['cart'][i]));
+                    localStorage.setItem('cart', JSON.stringify(response['cart']))
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+
+            UpdateCart()
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="d-grid gap-2">
+
+    </div>
+    <div class="row">
+        <div class="col-sm-5">
+            <div class="card h-100">
+                <div class="card-header text-center">Adres</div>
+                <div class="card-body">
+                    {{order.shipping.address.name}} {{ order.shipping.address.lastname }}<br>
+                    {{ order.shipping.address.street }} {{ order.shipping.address.buildingnr }} {{ order.shipping.address.localenr }}<br>
+                    {{ order.shipping.address.city }} {{ order.shipping.address.postcode }}<br>
+                    {{ order.shipping.address.phonenr }}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-7 h-100 d-inline-block">
+            <div class="card">
+                <div class="card-header text-center">Wysyłka</div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <tbody>
+                        <tr>
+                            <td>Sposób Wysyłki</td>
+                            <td>{{ order.shipping.method.name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Status</td>
+                            <td>{{ order.shipping.status.name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Data wysłania</td>
+                            {% if order.shipping.shippeddate is not null %}<td>{{ order.shipping.shippeddate }}</td>{% else %}<td>-</td>{% endif %}
+                        </tr>
+                        <tr>
+                            <td>Numer Śledzenia</td>
+                            {% if order.shipping.tracking is not null %}<td>{{ order.shipping.tracking }}</td>{% else %}<td>-</td>{% endif %}
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="row gap-1">
+                        {% if order.shipping.status.id == 5 %} <a href="{{ path('checkout_return', {id: order.id}) }}"><button class="btn btn-primary gap-1 w-100">Zwróć</button></a> {% endif %}
+                        {% if is_granted('ROLE_ADMIN') %} <a href="{{ path('app_shipping_edit_s', {id: order.shipping.id}) }}"><button class="btn btn-primary gap-1 w-100">Modyfikuj</button></a> {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-header text-center">Płatność</div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <tbody>
+                <tr>
+                    <td>Sposób Płatności</td>
+                    <td>{{ order.payment.method.name }}</td>
+                </tr>
+                <tr>
+                    <td>Status</td>
+                    <td>{{ order.payment.status.name }}</td>
+                </tr>
+                <tr>
+                    <td>Wpłacona Kwota</td>
+                    {% if order.payment.paidamount != 0 %}<td>{{ order.payment.paidamount }} ZŁ</td>{% else %}<td>-</td>{% endif %}
+                </tr>
+                <tr>
+                    <td>Do Zapłaty</td>
+                    <td>{{ order.price }} ZŁ</td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="row gap-1">
+                {% if order.payment.status.id < 4 %} <a href="{{ path('checkout_payment', {id: order.id, 'referer': app.request.headers.get('referer')}) }}"><button class="btn btn-primary w-100">Zapłać</button></a> {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_shipping_edit_p', {id: order.id}) }}"><button class="btn btn-primary w-100">Modyfikuj</button></a>
+                    <a href="{{ path('app_shipping_edit_pad', {id: order.id, 'referer': app.request.headers.get('referer')}) }}"><button class="btn btn-primary w-100">(ADMIN) Opłać</button></a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-header text-center">Zawartość</div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <td>Produkt</td>
+                    <td>Ilość</td>
+                    <td>Cena (1)</td>
+                    <td>Suma</td>
+                </tr>
+                </thead>
+                <tbody>
+                {% for prod in order.products %}
+                    <tr>
+                        <td>{{ prod.item.title }}</td>
+                        <td>{{ prod.count }}</td>
+                        <td>{{ prod.item.price }} ZŁ</td>
+                        <td>{{ prod.item.price * prod.count }} ZŁ</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <p class="text-center">SUMA: {{ order.price }} ZŁ</p>
+            <div class="row gap-1">
+                {% if is_granted('ROLE_ADMIN') %} <a href="{{ path('app_shipping_edit_c', {id: order.id}) }}"><button class="btn btn-primary me-1 gap-1 w-100">Modyfikuj</button></a> {% endif %}
+            </div>
+        </div>
+    </div>
+    <br>
+{% endblock %}

@@ -20,15 +20,11 @@ class ShippingType extends AbstractType
             ->add('tracking')
             ->add('method', EntityType::class, [
                 'class' => ShippingMethod::class,
-'choice_label' => 'name',
+                'choice_label' => 'name',
             ])
             ->add('status', EntityType::class, [
                 'class' => ShippingStatus::class,
-'choice_label' => 'name',
-            ])
-            ->add('address', EntityType::class, [
-                'class' => ShippingAddress::class,
-'choice_label' => 'id',
+                'choice_label' => 'name',
             ])
         ;
     }

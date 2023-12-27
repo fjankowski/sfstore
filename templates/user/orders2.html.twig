@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="row">
+        {% for post in user.orders %}
+            <div class="card order-{{ loop.length-loop.index }}">
+                <div class="card-header">Zamówienie nr: {{ post.id }}</div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <td>Produkt</td>
+                                <td>Ilość</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for prod in post.products %}
+                            <tr>
+                                <td>{{ prod.item.title }}</td>
+                                <td>{{ prod.count }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <a href="{{ path('users_history_order', {id: post.id}) }}"><button class="btn btn-primary w-100" type="button">Szczegóły zamówienia</button></a>
+                </div>
+            </div>
+        {% endfor %}
+    {% if user.orders is empty %}
+        <h2 class="text-center">Brak zamówień</h2>
+    {% endif %}
+    </div>
+{% endblock %}

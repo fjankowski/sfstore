@@ -28,19 +28,33 @@
                 </li>
             </ul>
             <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success mx-2" type="submit">Search</button>
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="search-text">
+                <a href="" class="btn btn-outline-success mx-2" id="search-button">Search</a>
             </form>
             <a href="{{ path('checkout') }}"><button class="btn btn-outline-info mx-2 cart-btn">Koszyk (x)</button></a>
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                <a href="{{ path('user_page') }}"><button class="btn btn-outline-info mx-2" type="submit">Profil</button></a>
+                <a href="{{ path('user_page') }}"><button class="btn btn-outline-info mx-2">Profil</button></a>
             {% else %}
-                <a href="{{ path('app_login') }}"><button class="btn btn-outline-info mx-2" type="submit">Zaloguj</button></a>
+                <a href="{{ path('app_login') }}"><button class="btn btn-outline-info mx-2">Zaloguj</button></a>
             {% endif %}
         </div>
     </div>
 </nav>
 
 {% block javascripts %}
+    <script>
+        $(document).ready(function() {
+            // Obsługa naciśnięcia klawisza Enter w polu tekstowym
+            $('#search-text').keyup(function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    window.location.href = "search/"+$(this).val();
+                }
+            });
 
+            $('#search-text').change( function() {
+                $('#search-button').attr('href', "search/"+$(this).val());
+            });
+        });
+    </script>
 {% endblock %}

@@ -25,7 +25,11 @@
     </table>
     <h4 class="float-end cart-sum">Suma: <b>{{ total }}</b>zł</h4><br><br>
     <button class="btn btn-danger reset-cart">Usuń wszystko</button>
-    <a href="{{ path('checkout_shipping') }}"><button class="btn btn-primary float-end" id="finalize">Zapłać</button></a>
+    {% if app.session.get('cart_edit') is not empty %}<a href="{{ path('checkout_id_exit') }}"><button class="btn btn-danger funbutton">Anuluj edycje</button></a>{% endif %}
+    {% if app.session.get('cart_edit') is not empty %}<a href="{{ path('checkout_id') }}"><button class="btn btn-secondary float-end funbutton" id="clear">Zapisz dla id:0</button></a>
+    {% else %}<a href="{{ path('checkout_shipping') }}"><button class="btn btn-primary float-end" id="finalize">Zapłać</button></a>
+    {% endif %}
+
 {% endblock %}
 
 {% block javascripts %}
@@ -44,10 +48,13 @@
                 console.log("!!!");
                 RemoveFromCart($(this).data('item-id'), 1);
                 UpdateCart();
-                $('tbody').empty();
-                $('.cart-sum').html("Suma: <b>0</b>zł");
+                location.reload()
             });
-            console.log("!!!!!!");
+
+            $('.funbutton').click(function ()
+            {
+                localStorage.removeItem('cart');
+            })
         });
     </script>
 {% endblock %}
