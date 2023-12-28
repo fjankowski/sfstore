@@ -143,6 +143,7 @@ class ShippingController extends AbstractController
         ]);
     }
 
+
     #[Route('/list/{id}/edit/content', name: 'app_shipping_edit_c')]
     public function editContent(Request $request, Order $order, EntityManagerInterface $em): Response
     {

@@ -41,7 +41,7 @@
                         </tbody>
                     </table>
                     <div class="row gap-1">
-                        {% if order.shipping.status.id == 3 %} <a href="{{ path('app_shipping_edit_s', {id: order.shipping.id}) }}" class="btn btn-primary gap-1 w-100">(DEBUG) Dostarczenie</a> {% endif %}
+                        {% if order.shipping.status.id == 3 %} <a href="{{ path('user_debug_ship', {id: order.shipping.id}) }}" class="btn btn-primary gap-1 w-100">(DEBUG) Dostarczenie</a> {% endif %}
                         {% if is_granted('ROLE_ADMIN') %} <a href="{{ path('app_shipping_edit_s', {id: order.shipping.id}) }}"><button class="btn btn-primary gap-1 w-100">Modyfikuj</button></a> {% endif %}
                     </div>
                 </div>

@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Order;
+use App\Entity\ShippingStatus;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Repository\ShippingStatusRepository;
 use App\Repository\UserRepository;
 use App\Security\AppAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -98,6 +100,15 @@ class UserController extends AbstractController
     {
         $order = $tokenStorage->getToken()->getUser()->getOrders()[$index-1];
         return $this->render('order/order.html.twig', ['order' => $order]);
+    }
+
+    #[Route(path: '/user/debug/{id}', name: 'user_debug_ship')]
+    public function userSelfHistoryItemShipped(Order $order, TokenStorageInterface $tokenStorage, EntityManagerInterface $em): Response
+    {
+        $order->getShipping()->setStatus($em->getRepository(ShippingStatus::class)->find(['id' => 5]));
+        $em->flush();
+        $this->addFlash('success', "Zmieniono status przesyłki na Dostarczono");
+        return $this->redirectToRoute('user_page');
     }
 
     #[Route(path: '/user/order/{id}', name: 'users_history_order')]
