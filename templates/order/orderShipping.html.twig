@@ -33,18 +33,16 @@
                         var address = data.address;
                         if(address.name != '')
                         {
+                            let postcode = String(address.postcode).padStart(5, '0');
                             $('#order_address_form_name').val(address.name);
                             $('#order_address_form_lastname').val(address.lastname);
                             $('#order_address_form_street').val(address.street);
                             $('#order_address_form_building_nr').val(address.building_nr);
                             $('#order_address_form_locale_nr').val(address.locale_nr);
-                            $('#order_address_form_postcode').val(address.postcode);
+                            $('#order_address_form_postcode').val(postcode.replace(/^(\d{2})(\d{3})$/, "$1-$2"));
                             $('#order_address_form_city').val(address.city);
                             $('#order_address_form_phone_nr').val(address.phone_nr);
                         }
-
-                        console.log(address.locale_nr);
-                        console.log(address.locale_nr == '');
                     }
                 });
 
