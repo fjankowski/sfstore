@@ -79,15 +79,17 @@ function ClearCart()
 
 $(document).ready(function ()
 {
-    $('.add-to-cart').click(function() {
+    $('.add-to-cart').click(function()
+    {
         var productId = $(this).data('product-id');
         AddToCart(productId);
     });
 
-    $('.cart-btn').click(function () {
+    $('.cart-btn').click(function ()
+    {
         $.ajax({
             type: 'POST',
-            url: '/checkout', // endpoint dla koszyka
+            url: '/checkout',
             contentType: 'application/json',
             data: JSON.stringify({ cart: GetCart() }),
             success: function (response) {

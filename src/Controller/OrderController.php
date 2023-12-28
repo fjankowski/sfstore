@@ -95,7 +95,7 @@ class OrderController extends AbstractController
             $address->setStreet($data['street']);
             $address->setBuildingNr($data['building_nr']);
             $address->setLocaleNr($data['locale_nr']);
-            $address->setPostcode($data['postcode']);
+            $address->setPostcode((int)str_replace('-', '', $data['postcode']));
             $address->setCity($data['city']);
             $address->setPhoneNr($data['phone_nr']);
 
@@ -351,12 +351,6 @@ class OrderController extends AbstractController
 
     #[Route('/confirm', name: 'checkout_confirm')]
     public function confirm(SessionInterface $session)
-    {
-        return $this->render('home/index.html.twig');
-    }
-
-    #[Route('/return/{id}', name: 'checkout_return')]
-    public function return(SessionInterface $session)
     {
         return $this->render('home/index.html.twig');
     }

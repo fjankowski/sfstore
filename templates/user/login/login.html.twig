@@ -14,18 +14,18 @@
         </div>
     {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputUsername">Username</label>
+    <h1 class="h3 mb-3 font-weight-normal">Logowanie</h1>
+    <p>Podpowiedź do bazy demo: Login to też hasło</p>
+    <label for="inputUsername">Login</label>
     <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
-    <label for="inputPassword">Password</label>
+    <label for="inputPassword">Hasło</label>
     <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
 
     <input type="hidden" name="_csrf_token"
            value="{{ csrf_token('authenticate') }}"
     >
-
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
+    <br>
+    <button class="btn btn-lg btn-primary" type="submit">Zaloguj</button>
+    <a class="btn btn-lg btn-primary float-end" href="{{ path('app_register') }}">Rejestracja</a>
 </form>
 {% endblock %}

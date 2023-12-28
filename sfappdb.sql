@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 18, 2023 at 02:06 PM
+-- Generation Time: Dec 28, 2023 at 07:51 PM
 -- Wersja serwera: 10.4.32-MariaDB
 -- Wersja PHP: 8.2.12
 
@@ -71,6 +71,16 @@ CREATE TABLE `order` (
   `price` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `order`
+--
+
+INSERT INTO `order` (`id`, `user_id`, `payment_id`, `shipping_id`, `date`, `price`) VALUES
+(1, 1, 1, 1, '2023-12-28 19:24:51', 999.99),
+(2, 3, 2, 2, '2023-12-28 19:30:50', 52.69),
+(3, 3, 3, 3, '2023-12-28 19:34:24', 891.99),
+(4, 1, 4, 4, '2023-12-28 19:37:04', 1607.08);
+
 -- --------------------------------------------------------
 
 --
@@ -84,6 +94,19 @@ CREATE TABLE `order_product_entry` (
   `count` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `order_product_entry`
+--
+
+INSERT INTO `order_product_entry` (`id`, `order_ref_id`, `item_id`, `count`) VALUES
+(1, 1, 1, 1),
+(2, 2, 3, 1),
+(3, 2, 9, 1),
+(4, 2, 2, 1),
+(5, 3, 7, 2),
+(6, 3, 5, 1),
+(7, 4, 8, 4);
+
 -- --------------------------------------------------------
 
 --
@@ -96,6 +119,16 @@ CREATE TABLE `payment` (
   `status_id` int(11) NOT NULL,
   `paid_amount` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `payment`
+--
+
+INSERT INTO `payment` (`id`, `method_id`, `status_id`, `paid_amount`) VALUES
+(1, 2, 5, 999.99),
+(2, 5, 4, 52.69),
+(3, 5, 3, 11),
+(4, 6, 3, 555);
 
 -- --------------------------------------------------------
 
@@ -157,6 +190,16 @@ CREATE TABLE `shipping` (
   `tracking` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `shipping`
+--
+
+INSERT INTO `shipping` (`id`, `method_id`, `status_id`, `address_id`, `shipped_date`, `tracking`) VALUES
+(1, 3, 5, 1, NULL, NULL),
+(2, 3, 3, 2, '2023-12-28 19:48:46', 818084097),
+(3, 3, 1, 3, NULL, NULL),
+(4, 2, 2, 1, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -175,6 +218,15 @@ CREATE TABLE `shipping_address` (
   `city` varchar(255) NOT NULL,
   `phone_nr` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `shipping_address`
+--
+
+INSERT INTO `shipping_address` (`id`, `user_id`, `name`, `lastname`, `street`, `building_nr`, `locale_nr`, `postcode`, `city`, `phone_nr`) VALUES
+(1, 1, 'Imię', 'Nazwisko', 'Ulicowa', 3, NULL, 446, 'Miastowo', 123456789),
+(2, 3, 'Adam', 'Nowak', 'Mickiewicza', 2, 5, 12345, 'Poznan', 123456789),
+(3, NULL, 'Inne Imie', 'Inne Nazwisko', 'Jakaś', 8, NULL, 44444, 'Olsztyn', 111222);
 
 -- --------------------------------------------------------
 
@@ -216,8 +268,8 @@ INSERT INTO `shipping_status` (`id`, `name`) VALUES
 (1, 'Przetwarzanie'),
 (2, 'Pakowanie'),
 (3, 'Przekazano kurierowi'),
-(4, 'Dostarczono'),
-(5, 'Zakończono'),
+(4, 'W drodze'),
+(5, 'Dostarczono'),
 (6, 'Zgubiono w Trasie');
 
 -- --------------------------------------------------------
@@ -270,8 +322,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `roles`, `password`) VALUES
-(1, 'admin', '[]', '$2y$13$O4o.4oLghX4FR9aJW6lDiuCfOZZ1Llevg.bwlfNIi4pbRsMKIrLga'),
-(2, 'magazyn', '[]', '$2y$13$ADddr5MMlnEqliQJL9TI/ese.0i040hljQGVE.YEOAhyAg0/txes6'),
+(1, 'admin', '[\"ROLE_ADMIN\"]', '$2y$13$O4o.4oLghX4FR9aJW6lDiuCfOZZ1Llevg.bwlfNIi4pbRsMKIrLga'),
+(2, 'magazyn', '[\"ROLE_USER\",\"ROLE_MAGAZYN\"]', '$2y$13$ADddr5MMlnEqliQJL9TI/ese.0i040hljQGVE.YEOAhyAg0/txes6'),
 (3, 'user', '[]', '$2y$13$bO3B5dnoRRd0xmRDxCg1TejhJLvb301TQZYfJCjZwvy03b14DOSsC');
 
 --
@@ -383,19 +435,19 @@ ALTER TABLE `category`
 -- AUTO_INCREMENT for table `order`
 --
 ALTER TABLE `order`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `order_product_entry`
 --
 ALTER TABLE `order_product_entry`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `payment_method`
@@ -413,13 +465,13 @@ ALTER TABLE `payment_status`
 -- AUTO_INCREMENT for table `shipping`
 --
 ALTER TABLE `shipping`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `shipping_address`
 --
 ALTER TABLE `shipping_address`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `shipping_method`

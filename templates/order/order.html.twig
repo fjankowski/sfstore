@@ -32,7 +32,7 @@
                         </tr>
                         <tr>
                             <td>Data wysłania</td>
-                            {% if order.shipping.shippeddate is not null %}<td>{{ order.shipping.shippeddate }}</td>{% else %}<td>-</td>{% endif %}
+                            {% if order.shipping.shippeddate is not null %}<td>{{ order.shipping.shippeddate.format('Y-m-d H:i:s') }}</td>{% else %}<td>-</td>{% endif %}
                         </tr>
                         <tr>
                             <td>Numer Śledzenia</td>
@@ -41,7 +41,7 @@
                         </tbody>
                     </table>
                     <div class="row gap-1">
-                        {% if order.shipping.status.id == 5 %} <a href="{{ path('checkout_return', {id: order.id}) }}"><button class="btn btn-primary gap-1 w-100">Zwróć</button></a> {% endif %}
+                        {% if order.shipping.status.id == 3 %} <a href="{{ path('app_shipping_edit_s', {id: order.shipping.id}) }}" class="btn btn-primary gap-1 w-100">(DEBUG) Dostarczenie</a> {% endif %}
                         {% if is_granted('ROLE_ADMIN') %} <a href="{{ path('app_shipping_edit_s', {id: order.shipping.id}) }}"><button class="btn btn-primary gap-1 w-100">Modyfikuj</button></a> {% endif %}
                     </div>
                 </div>

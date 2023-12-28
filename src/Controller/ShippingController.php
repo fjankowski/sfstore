@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\String\ByteString;
 
 #[Route('/shipping')]
 class ShippingController extends AbstractController
@@ -40,9 +41,13 @@ class ShippingController extends AbstractController
     {
         $order = $orderRepository->createQueryBuilder('o')
             ->join('o.shipping', 's')
+            ->join('o.payment', 'p')
             ->join('s.status', 'ss')
+            ->join('p.status', 'pp')
             ->where('ss.id <= :num')
             ->setParameter('num', 2)
+            ->andWhere('pp.id >= :num2')
+            ->setParameter('num2', 4)
             ->getQuery()
             ->getResult();
 
@@ -79,6 +84,7 @@ class ShippingController extends AbstractController
                     {
                         $session->remove('toShip_data');
                         $order[0]->getShipping()->setStatus($ss->find(['id' => 3]));
+                        $order[0]->getShipping()->setTracking(random_int(0, 999999999));
                         $order[0]->getShipping()->setShippedDate(new \DateTime());
                         $em->flush();
                         return $this->redirectToRoute('app_shipping_ship');

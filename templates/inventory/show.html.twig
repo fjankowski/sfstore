@@ -2,8 +2,10 @@
 
 {% block body %}
     <h1>{{ item.title }}</h1>
+    <h5>{{ item.price }} ZŁ</h5>
     <h6>id:{{ item.id }}</h6>
     <h6>{{ item.category }} ({{ item.category.id }})</h6>
+    <a href="#" class="btn btn-primary add-to-cart" data-product-id="{{ item.id }}">Dodaj do koszyka</a>
     <p>{{ item.description }}</p>
     <img src="{{ '/public/uploads/' ~ item.image }}">
 {% endblock %}

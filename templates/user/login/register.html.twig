@@ -3,17 +3,21 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+    <h1>Rejestracja</h1>
 
     {{ form_errors(registrationForm) }}
 
     {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.username) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
+        {{ form_row(registrationForm.username, {
+            label: 'Login'
         }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+        {{ form_row(registrationForm.plainPassword, {
+            label: 'Hasło'
+        }) }}
+        {{ form_row(registrationForm.agreeTerms, {
+            label: 'Potwierdzam Regulamin'
+        }) }}
 
-        <button type="submit" class="btn">Register</button>
+        <button type="submit" class="btn btn-primary w-100">Zarejestruj</button>
     {{ form_end(registrationForm) }}
 {% endblock %}
